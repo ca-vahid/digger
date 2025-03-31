@@ -1,0 +1,47 @@
+{
+  "name": "digger-remastered",
+  "version": "1.0.0",
+  "description": "A modern remake of the classic Digger game with React, Next.js and TypeScript",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "framer-motion": "^10.16.4",
+    "next": "^14.2.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "use-sound": "^4.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.5.7",
+    "@types/react": "^18.2.21",
+    "@types/react-dom": "^18.2.7",
+    "autoprefixer": "^10.4.15",
+    "eslint": "^8.48.0",
+    "eslint-config-next": "^14.2.3",
+    "postcss": "^8.4.28",
+    "tailwindcss": "^3.3.3",
+    "typescript": "^5.2.2"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ca-vahid/digger.git"
+  },
+  "keywords": [
+    "digger",
+    "game",
+    "nextjs",
+    "react",
+    "typescript",
+    "arcade"
+  ],
+  "author": "Vahid",
+  "license": "MIT"
+}
