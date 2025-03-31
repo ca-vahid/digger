@@ -1334,7 +1334,7 @@ const Game: React.FC = () => {
       const isPowered = gameState.powerMode > 0;
       cellContent = (
         <div 
-          className={`w-full h-full ${isPowered ? 'bg-purple-600 animate-pulse' : 'bg-red-600'} flex items-center justify-center text-white font-bold`}
+          className={`w-full h-full flex items-center justify-center ${isPowered ? 'text-purple-300 animate-pulse' : 'text-red-500'} font-bold text-xl`}
         >
           {diggerChar}
         </div>
@@ -1344,25 +1344,20 @@ const Game: React.FC = () => {
       bgColor = 'bg-black';
       cellContent = (
         <div className="w-full h-full flex items-center justify-center">
-          <div className="w-3 h-3 bg-orange-500 rounded-full animate-pulse"></div>
+          <div className="w-3 h-3 bg-orange-500 rounded-full animate-pulse shadow-lg shadow-orange-300"></div>
         </div>
       );
     } else if (enemy) {
       bgColor = 'bg-black';
       // Updated enemy rendering with different visuals for Hobbin and power mode
-      const enemyColor = enemy.type === EnemyType.Nobbin ? 'bg-green-700' : 'bg-red-700';
+      const enemyColor = enemy.type === EnemyType.Nobbin ? 'text-green-500' : 'text-red-500';
       const enemyText = enemy.type === EnemyType.Nobbin ? 'N' : 'H';
-      
-      // Show transformation progress for Nobbins
-      const transformStatus = enemy.type === EnemyType.Nobbin 
-        ? `${Math.max(0, Math.min(100, (1 - enemy.transformTimer / HOBBIN_TRANSFORM_TIME) * 100)).toFixed(0)}%` 
-        : '';
       
       // Add visual cue for enemies that are vulnerable in power mode
       const isPowerMode = gameState.powerMode > 0;
       
       cellContent = (
-        <div className={`w-full h-full ${enemyColor} flex items-center justify-center text-white font-bold relative ${isPowerMode ? 'opacity-60 animate-pulse' : ''}`}>
+        <div className={`w-full h-full flex items-center justify-center ${enemyColor} font-bold text-lg relative ${isPowerMode ? 'opacity-60 animate-pulse' : ''}`}>
           {enemyText}
           {enemy.type === EnemyType.Nobbin && enemy.transformTimer < HOBBIN_TRANSFORM_TIME / 2 && (
             <div className="absolute bottom-0 left-0 right-0 h-1 bg-gray-700">
@@ -1373,7 +1368,7 @@ const Game: React.FC = () => {
             </div>
           )}
           {isPowerMode && (
-            <div className="absolute inset-0 border-2 border-blue-300 opacity-50"></div>
+            <div className="absolute inset-0 border-2 border-blue-300 opacity-50 rounded-sm"></div>
           )}
         </div>
       );
@@ -1381,8 +1376,8 @@ const Game: React.FC = () => {
       bgColor = 'bg-black';
       const fallingClass = goldBag.isFalling ? 'animate-bounce' : '';
       cellContent = (
-        <div className={`w-full h-full bg-yellow-500 flex items-center justify-center text-black text-xs ${fallingClass}`}>
-          {isClient ? '💰' : 'G'}
+        <div className={`w-full h-full flex items-center justify-center text-yellow-500 ${fallingClass}`}>
+          <span className="text-lg">{isClient ? '💰' : 'G'}</span>
         </div>
       );
     } else if (goldNugget) {
@@ -1390,8 +1385,8 @@ const Game: React.FC = () => {
       bgColor = 'bg-black';
       cellContent = (
         <div className="w-full h-full flex items-center justify-center">
-          <div className="w-3 h-3 bg-yellow-400 rounded-full animate-pulse">
-            <span className="text-xs text-black font-bold">{isClient ? '$' : 'G'}</span>
+          <div className="text-yellow-400 text-lg animate-pulse">
+            {isClient ? '$' : 'G'}
           </div>
         </div>
       );
@@ -1408,7 +1403,7 @@ const Game: React.FC = () => {
     } else if (emerald) {
       bgColor = 'bg-black';
       cellContent = (
-        <div className="w-full h-full bg-green-500 flex items-center justify-center text-black text-xs animate-pulse">
+        <div className="w-full h-full flex items-center justify-center text-green-400 text-lg animate-pulse">
           {isClient ? '💎' : 'E'}
         </div>
       );
