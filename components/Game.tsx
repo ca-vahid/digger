@@ -281,7 +281,18 @@ interface PowerUp {
   collectTime: number; // when it was collected
 }
 
-// Define the initial game state
+// Add ClientOnly wrapper component to prevent hydration issues
+const ClientOnly = ({ children }: { children: React.ReactNode }) => {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  return isMounted ? <>{children}</> : <div className="min-h-screen bg-black"></div>;
+};
+
+// Define the Game component
 const Game: React.FC = () => {
   // Add isClient state to handle hydration issues
   const [isClient, setIsClient] = useState(false);
@@ -1420,34 +1431,46 @@ const Game: React.FC = () => {
   // --- JSX Return ---
   return (
     <div className="relative flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-gray-900 to-black overflow-hidden">
-      {/* Background stars */}
-      <div className="absolute inset-0 overflow-hidden">
-        {Array.from({ length: 50 }).map((_, i) => (
-          <div
-            key={`star-${i}`}
-            className="absolute w-1 h-1 bg-white rounded-full"
-            style={{
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-              opacity: Math.random() * 0.7 + 0.3,
-              animation: `twinkle ${Math.random() * 5 + 2}s infinite`
-            }}
-          />
-        ))}
-      </div>
+      {/* Background stars - only render on client */}
+      {isClient && (
+        <div className="absolute inset-0 overflow-hidden">
+          {Array.from({ length: 50 }).map((_, i) => (
+            <div
+              key={`star-${i}`}
+              className="absolute w-1 h-1 bg-white rounded-full"
+              style={{
+                top: `${Math.random() * 100}%`,
+                left: `${Math.random() * 100}%`,
+                opacity: Math.random() * 0.7 + 0.3,
+                animation: `twinkle ${Math.random() * 5 + 2}s infinite`
+              }}
+            />
+          ))}
+        </div>
+      )}
       
-      {/* Add blur glow effects */}
-      <div className="absolute top-1/4 left-1/4 w-40 h-40 bg-blue-500 rounded-full filter blur-3xl opacity-10"></div>
-      <div className="absolute bottom-1/4 right-1/4 w-60 h-60 bg-purple-500 rounded-full filter blur-3xl opacity-10"></div>
+      {/* Add blur glow effects - only on client */}
+      {isClient && (
+        <>
+          <div className="absolute top-1/4 left-1/4 w-40 h-40 bg-blue-500 rounded-full filter blur-3xl opacity-10"></div>
+          <div className="absolute bottom-1/4 right-1/4 w-60 h-60 bg-purple-500 rounded-full filter blur-3xl opacity-10"></div>
+        </>
+      )}
       
-      {/* Game title */}
-      <motion.h1 
-        className="text-4xl font-bold mb-8 text-white drop-shadow-lg"
-        animate={{ y: [0, -5, 0], textShadow: ['0 0 10px #fff', '0 0 20px #fff', '0 0 10px #fff'] }}
-        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-      >
-        DIGGER REMASTERED
-      </motion.h1>
+      {/* Game title - conditional animation */}
+      {isClient ? (
+        <motion.h1 
+          className="text-4xl font-bold mb-8 text-white drop-shadow-lg"
+          animate={{ y: [0, -5, 0], textShadow: ['0 0 10px #fff', '0 0 20px #fff', '0 0 10px #fff'] }}
+          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+        >
+          DIGGER REMASTERED
+        </motion.h1>
+      ) : (
+        <h1 className="text-4xl font-bold mb-8 text-white drop-shadow-lg">
+          DIGGER REMASTERED
+        </h1>
+      )}
       
       {/* Scoreboard Area */}
       <div className="mb-4 p-2 border-2 border-gray-500 bg-gray-900 rounded backdrop-blur-sm bg-opacity-75 shadow-lg">
@@ -1817,4 +1840,11 @@ const generatePortals = (grid: CellType[][]): Portal[] => {
   return portals;
 };
 
-export default Game;
+// Export the wrapped component
+export default function WrappedGame() {
+  return (
+    <ClientOnly>
+      <Game />
+    </ClientOnly>
+  );
+}

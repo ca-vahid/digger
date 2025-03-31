@@ -5,8 +5,8 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Digger Game",
-  description: "A recreation of the classic Digger arcade game",
+  title: "Digger Remastered",
+  description: "A modern remake of the classic Digger game",
 };
 
 export default function RootLayout({
