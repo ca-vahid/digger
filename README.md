@@ -2,7 +2,7 @@
 
 A modern remake of the classic Digger game, rebuilt with React, Next.js, and TypeScript. Dig tunnels, collect emeralds, avoid enemies, and watch out for falling gold bags!
 
-![Digger Remastered Screenshot](screenshot.png)
+![Digger Remastered Screenshot](./screenshot.png)
 
 ## 🎮 Game Overview
 
