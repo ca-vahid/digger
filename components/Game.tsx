@@ -283,10 +283,9 @@ interface PowerUp {
 
 // Define the initial game state
 const Game: React.FC = () => {
-  // Add a clientSide state to prevent hydration errors with emojis
+  // Add isClient state to handle hydration issues
   const [isClient, setIsClient] = useState(false);
   
-  // Use effect to set client-side rendering after initial mount
   useEffect(() => {
     setIsClient(true);
   }, []);
@@ -1381,7 +1380,7 @@ const Game: React.FC = () => {
       cellContent = (
         <div className="w-full h-full flex items-center justify-center">
           <div className="w-3 h-3 bg-yellow-400 rounded-full animate-pulse">
-            <span className="text-xs text-black font-bold">$</span>
+            <span className="text-xs text-black font-bold">{isClient ? '$' : 'G'}</span>
           </div>
         </div>
       );
@@ -1453,7 +1452,7 @@ const Game: React.FC = () => {
       {/* Scoreboard Area */}
       <div className="mb-4 p-2 border-2 border-gray-500 bg-gray-900 rounded backdrop-blur-sm bg-opacity-75 shadow-lg">
         <span className="mr-4">Score: {String(gameState.score).padStart(6, '0')}</span>
-        <span className="mr-4">Lives: {'❤️'.repeat(gameState.lives)}</span>
+        <span className="mr-4">Lives: {isClient ? '❤️'.repeat(gameState.lives) : `♥ x${gameState.lives}`}</span>
         <span className="mr-4">Level: {gameState.level}</span>
         <span className="mr-4">
           Emerald Streak: <span className={gameState.emeraldStreak > 1 ? 'text-green-500 font-bold' : ''}>
