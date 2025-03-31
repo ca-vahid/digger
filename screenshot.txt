@@ -1,0 +1,11 @@
+Digger Remastered Game Screenshot
+
+The screenshot would show:
+- The game grid with tunnels, emeralds, gold bags, and enemies
+- The Digger character navigating through the maze
+- Particle effects when collecting items
+- Teleport portals connecting different parts of the maze
+- The score, lives, and level information at the top
+- Possibly a cherry power-up and enemies (Nobbins and Hobbins)
+
+This visually appealing screenshot demonstrates the game's engaging design with its dark background, colorful game elements, and modern UI. 
