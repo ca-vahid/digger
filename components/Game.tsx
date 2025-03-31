@@ -152,16 +152,55 @@ const ANIMATION_DURATION = 0.5; // Animation duration in seconds
 
 // Add a SoundManager component
 const SoundManager = ({ gameState, prevGameState }: { gameState: GameState, prevGameState: GameState | null }) => {
-  // We'll simulate the sounds with console logs for now
-  // In a real implementation, you would use the useSound hook from 'use-sound'
+  // Use the useSound hook for each sound effect
+  const [playDig] = useSound('/sounds/dig.mp3', { volume: 0.5 });
+  const [playCollectEmerald] = useSound('/sounds/collect-emerald.mp3', { volume: 0.6 });
+  const [playCollectGold] = useSound('/sounds/collect-gold.mp3', { volume: 0.6 });
+  const [playCollectCherry] = useSound('/sounds/collect-cherry.mp3', { volume: 0.7 });
+  const [playBagFall] = useSound('/sounds/bag-fall.mp3', { volume: 0.5 });
+  const [playBagBreak] = useSound('/sounds/bag-break.mp3', { volume: 0.6 });
+  const [playFire] = useSound('/sounds/fire.mp3', { volume: 0.5 });
+  const [playEnemyKill] = useSound('/sounds/enemy-kill.mp3', { volume: 0.6 });
+  const [playDiggerDeath] = useSound('/sounds/digger-death.mp3', { volume: 0.7 });
+  const [playLevelComplete] = useSound('/sounds/level-complete.mp3', { volume: 0.7 });
+  const [playGameOver] = useSound('/sounds/game-over.mp3', { volume: 0.7 });
+  const [playPowerUp] = useSound('/sounds/power-up.mp3', { volume: 0.7 });
+  
+  // Handle sound effect errors
+  const [soundReady, setSoundReady] = useState(false);
   
   useEffect(() => {
-    if (!prevGameState) return;
+    // Set sound as ready to prevent errors before sound files are loaded
+    setSoundReady(true);
+    
+    // Create Audio objects to preload sounds
+    const preloadSounds = () => {
+      const soundFiles = Object.values(SOUND_EFFECTS);
+      soundFiles.forEach(src => {
+        try {
+          const audio = new Audio();
+          audio.src = src;
+        } catch (err) {
+          console.log('Error preloading sound:', err);
+        }
+      });
+    };
+    
+    preloadSounds();
+  }, []);
+  
+  useEffect(() => {
+    if (!prevGameState || !soundReady) return;
     
     // Detect emerald collection
     if (gameState.score > prevGameState.score && !gameState.gameOver) {
-      console.log('Playing sound: Collect item');
-      // playSound(SOUND_EFFECTS.COLLECT_EMERALD);
+      // Different sounds for different items
+      const prevEmeraldCount = prevGameState.emeralds.length;
+      const currentEmeraldCount = gameState.emeralds.length;
+      
+      if (currentEmeraldCount < prevEmeraldCount) {
+        try { playCollectEmerald(); } catch (e) { console.log('Sound error:', e); }
+      }
     }
     
     // Detect bag falling
@@ -169,40 +208,58 @@ const SoundManager = ({ gameState, prevGameState }: { gameState: GameState, prev
     const prevBags = prevGameState.goldBags;
     for (let i = 0; i < currentBags.length; i++) {
       if (currentBags[i].isFalling && !prevBags[i].isFalling) {
-        console.log('Playing sound: Bag start falling');
-        // playSound(SOUND_EFFECTS.BAG_FALL);
+        try { playBagFall(); } catch (e) { console.log('Sound error:', e); }
       }
       if (currentBags[i].fallDistance > 1 && prevBags[i].fallDistance <= 1) {
-        console.log('Playing sound: Bag breaking');
-        // playSound(SOUND_EFFECTS.BAG_BREAK);
+        try { playBagBreak(); } catch (e) { console.log('Sound error:', e); }
       }
+    }
+    
+    // Detect gold nugget collection
+    if (gameState.goldNuggets.length < prevGameState.goldNuggets.length) {
+      try { playCollectGold(); } catch (e) { console.log('Sound error:', e); }
     }
     
     // Detect digger death
     if (gameState.diggerRespawning && !prevGameState.diggerRespawning) {
-      console.log('Playing sound: Digger death');
-      // playSound(SOUND_EFFECTS.DIGGER_DEATH);
+      try { playDiggerDeath(); } catch (e) { console.log('Sound error:', e); }
     }
     
     // Detect level complete
     if (gameState.levelCompleting && !prevGameState.levelCompleting) {
-      console.log('Playing sound: Level complete');
-      // playSound(SOUND_EFFECTS.LEVEL_COMPLETE);
+      try { playLevelComplete(); } catch (e) { console.log('Sound error:', e); }
     }
     
     // Detect game over
     if (gameState.gameOver && !prevGameState.gameOver) {
-      console.log('Playing sound: Game over');
-      // playSound(SOUND_EFFECTS.GAME_OVER);
+      try { playGameOver(); } catch (e) { console.log('Sound error:', e); }
     }
     
     // Detect power mode activation
     if (gameState.powerMode > 0 && prevGameState.powerMode === 0) {
-      console.log('Playing sound: Power up');
-      // playSound(SOUND_EFFECTS.POWER_UP);
+      try { playPowerUp(); } catch (e) { console.log('Sound error:', e); }
     }
     
-  }, [gameState, prevGameState]);
+    // Detect firing
+    if (gameState.fireballs.length > prevGameState.fireballs.length) {
+      try { playFire(); } catch (e) { console.log('Sound error:', e); }
+    }
+    
+    // Detect enemy kill
+    if (gameState.enemies.length < prevGameState.enemies.length) {
+      try { playEnemyKill(); } catch (e) { console.log('Sound error:', e); }
+    }
+    
+    // Detect digging (moving into dirt)
+    const prevPos = prevGameState.diggerPos;
+    const currentPos = gameState.diggerPos;
+    if (prevPos.x !== currentPos.x || prevPos.y !== currentPos.y) {
+      try { playDig(); } catch (e) { console.log('Sound error:', e); }
+    }
+    
+  }, [gameState, prevGameState, soundReady, playDig, playCollectEmerald, playCollectGold, 
+      playCollectCherry, playBagFall, playBagBreak, playFire, playEnemyKill, 
+      playDiggerDeath, playLevelComplete, playGameOver, playPowerUp]);
   
   return null;
 };
